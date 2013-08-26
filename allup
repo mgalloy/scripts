@@ -1,0 +1,41 @@
+#!/usr/bin/env sh
+SVN=/usr/bin/svn
+SVN_UPOPTIONS=""
+
+BREW=/usr/local/bin/brew
+
+GIT=/usr/local/bin/git
+GIT_OPTIONS=""
+
+echo "Checking brew..."
+sudo brew update
+
+echo "Checking TextMate..."
+cd ~/Library/Application\ Support/TextMate/Bundles/IDL.tmbundle
+$SVN up $SVN_UPOPTIONS
+cd ~/Library/Application\ Support/TextMate/Bundles/Docbook.tmbundle
+$SVN up $SVN_UPOPTIONS
+cd ~/Library/Application\ Support/TextMate/Themes
+$SVN up $SVN_UPOPTIONS
+cd ~/Library/Application\ Support/Avian/Bundles/IDL.tmbundle
+$GIT pull $GIT_OPTIONS
+
+# handle Subversion repos
+repos=( `cat ~/.repos` )
+for r in ${repos[*]}
+do
+  echo "Updating $r..."
+  cd $r
+  $SVN up $SVN_OPTIONS
+done
+
+# handle Git repos
+repos=( `cat ~/.gitrepos` )
+for r in ${repos[*]}
+do
+  echo "Updating $r..."
+  cd $r
+  $GIT pull $GIT_OPTIONS
+done
+
+echo "Finished updating repos at `date`"

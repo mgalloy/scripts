@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+USAGE="Usage: $0 file1 file2 file3 ..."
+
+if [ "$#" == "0" ]; then
+  echo "$USAGE"
+  exit 1
+fi
+
+while (( "$#" )); do
+  sed -i '' -e 's/[[:space:]]*$//' $1
+  shift
+done
