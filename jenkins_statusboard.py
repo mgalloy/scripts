@@ -47,7 +47,7 @@ def check_test_result(url_format, base_url, project, builtOn):
 
 
 projects = ['GPULIB-1.6.2-gpulib', 'gpuliball', 'mpidl-build', 'taskdlall']
-display_names = ['GPULib 1.6.2', 'GPULib trunk', 'mpiDL trunk', 'TaskDL trunk']
+display_names = ['GPULib 1.6.2', 'GPULib', 'mpiDL', 'TaskDL']
 test_result_url = ['%s/job/%s/qarnodes=%s/ws/builds-v/gpulib/gpu-nolicense/Testing/Temporary/LastTest.log',
                    '%s/job/%s/qarnodes=%s/ws/builds-v/gpulib/gpu-nolicense/Testing/Temporary/LastTest.log',
                    '',
@@ -88,7 +88,7 @@ for p, name, tresult in itertools.izip(projects, display_names, test_result_url)
   # artifacts_dict = dict((af.filename, af) for af in artifacts)
   # print artifacts_dict['mkgpulib-summary.txt'].get_data()
 
-  tmp_file.write('    <td class="projectName" style="width: 100px;">%s</td>\n' % name)
+  tmp_file.write('    <td class="projectName" style="width: 95px;">%s</td>\n' % name)
   tmp_file.write('    <td class="projectIcon noresize" style="width: 30px;">\n')
   tmp_file.write('      <img src="jenkins_images/%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % status.lower())
   for r in last_build._data['runs']:
@@ -96,7 +96,7 @@ for p, name, tresult in itertools.izip(projects, display_names, test_result_url)
   tmp_file.write('    </td>\n')
   tmp_file.write('    <td class="projectName" style="width: 130px;">%s</td>\n' % ts)
 
-  tmp_file.write('    <td class="projectIcon noresize" style="width: 85px;">\n')
+  tmp_file.write('    <td class="projectIcon noresize" style="width: 90px;">\n')
 
   for r in xrange(len(last_build._data['runs'])):
     if len(tresult) != 0:
