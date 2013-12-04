@@ -1,4 +1,15 @@
-#!/Users/mgalloy/anaconda/bin/python
+#!/usr/bin/env python
+
+# installing:
+#
+#   1. put this script into a location in your path
+#   2. add this script to your crontab, for example to run every hour add (with
+#      "crontab -e"):
+#
+#        0 */1 * * * /Users/mgalloy/bin/jenkins_statusboard.py
+#   3. put the jenkins_images directory next the location of the script output
+#      on your server
+
 
 import datetime
 from dateutil import tz
