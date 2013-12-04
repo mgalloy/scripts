@@ -1,15 +1,4 @@
-#!/usr/bin/env python
-
-# installing:
-#
-#   1. put this script into a location in your path
-#   2. add this script to your crontab, for example to run every hour add (with
-#      "crontab -e"):
-#
-#        0 */1 * * * /Users/mgalloy/bin/jenkins_statusboard.py
-#   3. put the jenkins_images directory next the location of the script output
-#      on your server
-
+#!/Users/mgalloy/anaconda/bin/python
 
 import datetime
 from dateutil import tz
@@ -88,15 +77,15 @@ for p, name, tresult in itertools.izip(projects, display_names, test_result_url)
   # artifacts_dict = dict((af.filename, af) for af in artifacts)
   # print artifacts_dict['mkgpulib-summary.txt'].get_data()
 
-  tmp_file.write('    <td class="projectName" style="width: 95px;">%s</td>\n' % name)
-  tmp_file.write('    <td class="projectIcon noresize" style="width: 30px;">\n')
+  tmp_file.write('    <td class="projectName" style="width: 190px;">%s</td>\n' % name)
+  tmp_file.write('    <td class="projectIcon noresize" style="width: 64px;">\n')
   tmp_file.write('      <img src="jenkins_images/%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % status.lower())
   for r in last_build._data['runs']:
     tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % r['result'].lower())
   tmp_file.write('    </td>\n')
-  tmp_file.write('    <td class="projectName" style="width: 130px;">%s</td>\n' % ts)
+  tmp_file.write('    <td class="projectName" style="width: 250px;">%s</td>\n' % ts)
 
-  tmp_file.write('    <td class="projectIcon noresize" style="width: 90px;">\n')
+  tmp_file.write('    <td class="projectIcon noresize" style="width: 258px;">\n')
 
   for r in xrange(len(last_build._data['runs'])):
     if len(tresult) != 0:
