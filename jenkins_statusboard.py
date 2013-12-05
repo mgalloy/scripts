@@ -60,7 +60,8 @@ for p, name, tresult in itertools.izip(projects, display_names, test_result_url)
   last_build = project.get_last_build()
   ts = last_build.get_timestamp().astimezone(local_tz).strftime("%m/%d/%y %I:%M %p")
   status = last_build.get_status()
-  
+  status = 'running' if (status == None) else status
+
   # try:
   #   lfb_num = project.get_last_failed_buildnumber()
   #   lfb = project.get_build(lfb_num)
