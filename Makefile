@@ -1,4 +1,4 @@
-SOURCE=allup fix_whitespace sms battery_check.sh svn_add_unknown.sh jenkins_statusboard.py
+SOURCE=allup fix_whitespace sms battery_check.sh svn_add_unknown.sh jenkins_statusboard
 PREFIX=~/bin
 
 .PHONY: install

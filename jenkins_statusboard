@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+
+import datetime
+from dateutil import tz
+import itertools
+import optparse
+import os
+import re
+import tempfile
+import urllib2
+
+import jenkinsapi
+from jenkinsapi.jenkins import Jenkins
+from jenkinsapi.artifact import Artifact
+
+
+def check_test_result(url_format, base_url, project, builtOn):
+  """Check a gpuliball test result."""
+  url = url_format % (base_url, project, builtOn)
+  u = urllib2.urlopen(url)
+  try:
+    content = u.read()
+  except urllib2.HTTPError:
+    return None
+  finally:
+    u.close()
+
+  results = re.findall('^Test (Passed|Failed)\.', content, flags=re.MULTILINE)
+  status = []
+  for r in results:
+    status.append('success' if r == 'Passed' else 'failure')
+  return status
+
+def check(base_url, publish_server, scp_options=None, verbose=False):
+  if scp_options is None: scp_options = ''
+
+  projects = ['GPULIB-1.6.2-gpulib', 'gpuliball', 'mpidl-build', 'taskdlall']
+  display_names = ['GPULib 1.6.2', 'GPULib', 'mpiDL', 'TaskDL']
+  test_result_url = ['%s/job/%s/qarnodes=%s/ws/builds-v/gpulib/gpu-nolicense/Testing/Temporary/LastTest.log',
+                     '%s/job/%s/qarnodes=%s/ws/builds-v/gpulib/gpu-nolicense/Testing/Temporary/LastTest.log',
+                     '',
+                     '']
+
+  jenkins_server = Jenkins(base_url)
+
+  now = datetime.datetime.now().strftime("%m/%d/%y %I:%M %p")
+  local_tz = tz.tzlocal()
+
+  tmp_file, tmp_filename = tempfile.mkstemp(suffix='.html', text=True)
+  os.close(tmp_file)
+
+  tmp_file = open(tmp_filename, mode='w')
+
+  tmp_file.write('<table id="projects">\n')
+  for p, name, tresult in itertools.izip(projects, display_names, test_result_url):
+    if verbose:
+      print 'Checking %s' % name
+    tmp_file.write('  <tr>\n')
+    project = jenkins_server[p]
+    last_build = project.get_last_build()
+    ts = last_build.get_timestamp().astimezone(local_tz).strftime("%m/%d/%y %I:%M %p")
+    status = last_build.get_status()
+    status = 'running' if status is None else status
+    if verbose:
+      print '  Status: %s' % status
+    tmp_file.write('    <td class="projectName" style="width: 190px;">%s</td>\n' % name)
+    tmp_file.write('    <td class="projectIcon noresize" style="width: 64px;">\n')
+    tmp_file.write('      <img src="jenkins_images/%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % status.lower())
+    for r in last_build._data['runs']:
+      rstatus = 'running' if r['result'] is None else r['result']
+      if verbose:
+        print '  Run status for %s: %s' % (r['builtOn'], rstatus)
+      tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % rstatus.lower())
+    tmp_file.write('    </td>\n')
+    tmp_file.write('    <td class="projectName" style="width: 250px;">%s</td>\n' % ts)
+
+    tmp_file.write('    <td class="projectIcon noresize" style="width: 258px;">\n')
+
+    for r in xrange(len(last_build._data['runs'])):
+      if len(tresult) != 0:
+        builtOn = last_build._data['runs'][r]['builtOn']
+        test_status = check_test_result(tresult, base_url, p, builtOn)
+        if verbose:
+          print '  Test results for %s: %s' % (builtOn, ', '.join(test_status))
+        for t in test_status:
+          tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % t)
+
+        tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 4px;"/>\n' % 'space')
+
+    tmp_file.write('    </td>\n')
+
+    tmp_file.write('  </tr>\n')
+
+  tmp_file.write('</table>\n')
+  tmp_file.close()
+
+  cmd = 'scp -q %s %s %s' % (scp_options, tmp_filename, publish_server)
+  if verbose:
+    print cmd
+  os.system(cmd)
+
+  with open('/Users/mgalloy/data/jenkins_statusboard.py.log', 'a') as logfile:
+    logfile.write('Updating Jenkins results at %s\n' % now)
+
+
+def main():
+  parser = optparse.OptionParser()
+  parser.add_option("-j", dest="base_url",
+                    help="Jenkins server")
+  parser.add_option("-s", dest="publish_server",
+                    help="Status Board server to upload results to")
+  parser.add_option("-o", dest="scp_options",
+                    help="scp options for upload")
+  parser.add_option("-v", action="store_true", dest="verbose", default=False,
+                    help="verbose mode")
+  (options, args) = parser.parse_args()
+
+  check(options.base_url, options.publish_server, options.scp_options, options.verbose)
+
+
+if __name__ == "__main__":
+  main()
