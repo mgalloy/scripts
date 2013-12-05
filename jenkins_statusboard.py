@@ -25,8 +25,12 @@ from jenkinsapi.custom_exceptions import (
 def check_test_result(url_format, base_url, project, builtOn):
   url = url_format % (base_url, project, builtOn)
   u = urllib2.urlopen(url)
-  content = u.read()
-  u.close()
+  try:
+    content = u.read()
+  except urllib2.HTTPError:
+    return None
+  finally:
+    u.close()
 
   results = re.findall('^Test (Passed|Failed)\.', content, flags=re.MULTILINE)
   status = []
