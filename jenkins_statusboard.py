@@ -82,7 +82,8 @@ for p, name, tresult in itertools.izip(projects, display_names, test_result_url)
   tmp_file.write('    <td class="projectIcon noresize" style="width: 64px;">\n')
   tmp_file.write('      <img src="jenkins_images/%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % status.lower())
   for r in last_build._data['runs']:
-    tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % r['result'].lower())
+    rstatus = 'running' if (r['result'] == None) else r['result']
+    tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % rstatus.lower())
   tmp_file.write('    </td>\n')
   tmp_file.write('    <td class="projectName" style="width: 250px;">%s</td>\n' % ts)
 
