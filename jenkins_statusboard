@@ -34,8 +34,10 @@ def check_test_result(url_format, base_url, project, builtOn):
 def check(base_url, publish_server, scp_options=None, verbose=False):
   if scp_options is None: scp_options = ''
 
-  projects = ['GPULIB-1.6.2-gpulib', 'gpuliball', 'mpidl-build', 'taskdlall']
-  display_names = ['GPULib 1.6.2', 'GPULib', 'mpiDL', 'TaskDL']
+  #projects = ['GPULIB-1.6.2-gpulib', 'gpuliball', 'mpidl-build', 'taskdlall']
+  projects = ['GPULIB-1.6.2-gpulib', 'gpuliball', 'taskdlall']
+  #display_names = ['GPULib 1.6.2', 'GPULib', 'mpiDL', 'TaskDL']
+  display_names = ['GPULib 1.6.2', 'GPULib', 'TaskDL']
   test_result_url = ['%s/job/%s/qarnodes=%s/ws/builds-v/gpulib/gpu-nolicense/Testing/Temporary/LastTest.log',
                      '%s/job/%s/qarnodes=%s/ws/builds-v/gpulib/gpu-nolicense/Testing/Temporary/LastTest.log',
                      '',
