@@ -66,7 +66,7 @@ def check(base_url, publish_server, scp_options=None, verbose=False):
     if verbose:
       print '  Status: %s' % status
     tmp_file.write('    <td class="projectName" style="width: 190px;">%s</td>\n' % name)
-    tmp_file.write('    <td class="projectIcon noresize" style="width: 64px;">\n')
+    tmp_file.write('    <td class="projectIcon noresize" style="width: 84px;">\n')
     tmp_file.write('      <img src="jenkins_images/%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % status.lower())
     for r in last_build._data['runs']:
       rstatus = 'running' if r['result'] is None else r['result']
@@ -74,9 +74,9 @@ def check(base_url, publish_server, scp_options=None, verbose=False):
         print '  Run status for %s: %s' % (r['builtOn'], rstatus)
       tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % rstatus.lower())
     tmp_file.write('    </td>\n')
-    tmp_file.write('    <td class="projectName" style="width: 250px;">%s</td>\n' % ts)
+    tmp_file.write('    <td class="projectName" style="width: 270px;">%s</td>\n' % ts)
 
-    tmp_file.write('    <td class="projectIcon noresize" style="width: 258px;">\n')
+    tmp_file.write('    <td class="projectIcon noresize" style="width: 218px;">\n')
 
     for r in xrange(len(last_build._data['runs'])):
       if len(tresult) != 0:
