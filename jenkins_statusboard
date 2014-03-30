@@ -74,9 +74,9 @@ def check(base_url, publish_server, scp_options=None, verbose=False):
         print '  Run status for %s: %s' % (r['builtOn'], rstatus)
       tmp_file.write('      <img src="jenkins_images/test-%s@2x.png" style="float: left; margin-right: 2px;"/>\n' % rstatus.lower())
     tmp_file.write('    </td>\n')
-    tmp_file.write('    <td class="projectName" style="width: 270px;">%s</td>\n' % ts)
+    tmp_file.write('    <td class="projectName" style="width: 280px;">%s</td>\n' % ts)
 
-    tmp_file.write('    <td class="projectIcon noresize" style="width: 218px;">\n')
+    tmp_file.write('    <td class="projectIcon noresize" style="width: 208px;">\n')
 
     for r in xrange(len(last_build._data['runs'])):
       if len(tresult) != 0:
