@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # dock preferences
-defaults write com.apple.dock pinning -string end
+#defaults write com.apple.dock pinning -string end
 
 # Disable menu bar transparency
 defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false
