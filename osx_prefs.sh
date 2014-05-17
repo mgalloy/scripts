@@ -14,3 +14,6 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Show the ~/Library folder
 chflags nohidden ~/Library
+
+# Do not launch xterm by default when X11 is started
+defaults write org.macosforge.xquartz.X11 app_to_run /usr/bin/true
