@@ -2,6 +2,7 @@
 
 # maximum age in days before needing to redownload
 MAX_AGE=1
+DATA_DIR=$HOME/data/export
 
 USAGE="Usage: $0 name1 name2 name3 ... nameN"
 if [ "$#" == "0" ]; then
@@ -10,9 +11,14 @@ if [ "$#" == "0" ]; then
 fi
 
 # specify list name and URL to retrieve it
-FILENAME=consolidated_party_list_final.csv
-URL=http://www.bis.doc.gov/images/consolidated_list/$FILENAME
-WGET_CMD="wget --no-use-server-timestamps $URL -o $FILENAME.log"
+FILENAME=$DATA_DIR/consolidated_list.csv
+URL=http://www.bis.doc.gov/images/consolidated_list/consolidated_party_list_final.csv
+WGET_CMD="wget --no-use-server-timestamps $URL -o $FILENAME.log -O $FILENAME"
+
+# create data directory if it does not exist already
+if [ ! -d $DATA_DIR ]; then
+  mkdir -p $DATA_DIR
+fi
 
 # only download if file is not already present or too old
 if [ -e "$FILENAME" ]; then
