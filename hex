@@ -1,0 +1,8 @@
+#!/bin/sh
+
+open -a 'Hex Fiend' $1
+if [ $? == 1 ]; then
+  echo "Hex Fiend not found, install at ridiculousfish.com/hexfiend"
+  open http://ridiculousfish.com/hexfiend
+fi
+
