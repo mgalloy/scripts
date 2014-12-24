@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+
+# Need youtube-dl and ffmpeg to run this script. Install them via homebrew
+# with:
+#
+#   brew install youtube-dl
+#   brew install ffmpeg
+
+# exit on any error
+set -o errexit
+
+# give help if no arguments
+if [ $# -ne 1 ]; then
+  echo "syntax: $0 YOUTUBE-URL"
+  exit 1
+fi
+
+# https://www.youtube.com/watch?v=YltEym9H0x4
+CODE=`echo $1 | grep -o -e "=.*"`
+CODE=${CODE:1}
+FILENAME=$CODE.mp3
+
+youtube-dl -x --audio-format mp3 -o "$CODE.%(ext)s" $1 || { echo "Download failed"; exit 1;}
+
+echo "Uploading $FILENAME to data.idldev.com/audio..."
+scp $FILENAME idldev.com:~/data.idldev.com/audio
+
+URL=http://data.idldev.com/audio/$FILENAME
+HUFFDUFFER=http://huffduffer.com/add?page=$URL
+
+open $HUFFDUFFER
+
+rm -f $FILENAME
