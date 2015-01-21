@@ -10,7 +10,8 @@ check_export.sh \
 hex moves.py \
 moves.sh \
 huffduff \
-update_software.sh
+update_software.sh \
+bibtex2yaml.rb
 
 PREFIX=~/bin
 
