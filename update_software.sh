@@ -13,10 +13,10 @@ stamp() {
 }
 
 stamp conda update
-if conda update conda >> $DATA_DIR/conda-update.log 2>&1; then
+if yes | conda update conda >> $DATA_DIR/conda-update.log 2>&1; then
   echo "conda updated"
   stamp anaconda update
-  if conda update anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
+  if yes | conda update anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
     echo "anaconda updated"
   else
     echo "Problem updating anaconda"
