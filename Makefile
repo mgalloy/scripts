@@ -9,7 +9,7 @@ reindex_mailapp.sh \
 check_export.sh \
 hex moves.py \
 moves.sh \
-huffduff \
+video2huffduffer \
 update_software.sh \
 bibtex2yaml.rb
 

@@ -16,9 +16,20 @@ if [ $# -ne 1 ]; then
 fi
 
 # https://www.youtube.com/watch?v=YltEym9H0x4
-CODE=`echo $1 | grep -o -e "=.*"`
-CODE=${CODE:1}
-FILENAME=$CODE.mp3
+# http://vimeo.com/114046349
+if echo $1 | grep "youtube.com" > /dev/null; then
+  CODE=`echo $1 | grep -o -e "=.*"`
+  CODE=${CODE:1}
+  FILENAME=$CODE.mp3
+  echo "YouTube video found: $CODE"
+else
+  CODE=`echo $1 | egrep -o -e "[0-9]+"`
+  CODE=${CODE:1}
+  FILENAME=$CODE.mp3
+  echo "Vimeo video found: $CODE"
+fi
+
+exit
 
 youtube-dl -x --audio-format mp3 -o "$CODE.%(ext)s" $1 || { echo "Download failed"; exit 1;}
 
