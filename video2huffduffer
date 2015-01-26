@@ -29,8 +29,6 @@ else
   echo "Vimeo video found: $CODE"
 fi
 
-exit
-
 youtube-dl -x --audio-format mp3 -o "$CODE.%(ext)s" $1 || { echo "Download failed"; exit 1;}
 
 echo "Uploading $FILENAME to data.idldev.com/audio..."
