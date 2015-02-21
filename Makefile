@@ -11,7 +11,8 @@ hex moves.py \
 moves.sh \
 video2huffduffer \
 update_software.sh \
-bibtex2yaml.rb
+bibtex2yaml.rb \
+makeappicons.sh
 
 PREFIX=~/bin
 
