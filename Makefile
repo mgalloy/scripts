@@ -12,7 +12,8 @@ moves.sh \
 video2huffduffer \
 update_software.sh \
 bibtex2yaml.rb \
-makeappicons.sh
+makeappicons.sh \
+dropbox.py
 
 PREFIX=~/bin
 
