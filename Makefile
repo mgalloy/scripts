@@ -13,7 +13,8 @@ video2huffduffer \
 update_software.sh \
 bibtex2yaml.rb \
 makeappicons.sh \
-dropbox.py
+dropbox.py \
+getudid.sh
 
 PREFIX=~/bin
 
