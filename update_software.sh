@@ -7,10 +7,10 @@ INDENT="  "
 
 stamp() {
   OUTFILE=$DATA_DIR/$1-$2.log
-  echo "\n$LINE" >> $OUTFILE
+  echo -e "\n$LINE" >> $OUTFILE
   echo "Updating $1" >> $OUTFILE
   echo `date` >> $OUTFILE
-  echo "$LINE\n" >> $OUTFILE
+  echo -e "$LINE\n" >> $OUTFILE
 }
 
 
