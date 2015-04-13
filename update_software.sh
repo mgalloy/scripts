@@ -28,6 +28,7 @@ if [ -n "$CONDA_FOUND" ]; then
     stamp anaconda update
     if yes | conda update anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
       echo "anaconda updated"
+      conda list > $DATA_DIR/conda-list.log 2>&1
     else
       echo "Problem updating anaconda"
     fi
