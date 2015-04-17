@@ -7,8 +7,10 @@ jenkins_statusboard \
 update_status.py \
 reindex_mailapp.sh \
 check_export.sh \
-hex moves.py \
+hex \
+moves.py \
 moves.sh \
+moves_refreshtoken.py \
 video2huffduffer \
 update_software.sh \
 bibtex2yaml.rb \
