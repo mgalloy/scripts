@@ -1,24 +1,24 @@
 SOURCE=allup \
-fix_whitespace \
-sms \
 battery_check.sh \
-svn_add_unknown.sh \
-jenkins_statusboard \
-update_status.py \
-reindex_mailapp.sh \
+bibtex2yaml.rb \
 check_export.sh \
+dropbox.py \
+fix_whitespace \
+getudid.sh \
 hex \
+jenkins_statusboard \
+makeappicons.sh \
 moves.py \
 moves.sh \
 moves_refreshtoken.py \
-video2huffduffer \
+reindex_mailapp.sh \
+sms \
+svn_add_unknown.sh \
 update_software.sh \
-bibtex2yaml.rb \
-makeappicons.sh \
-dropbox.py \
-getudid.sh
+update_status.py \
+video2huffduffer
 
-PREFIX=~/bin
+PREFIX=$(HOME)/bin
 
 .PHONY: all install
 
@@ -26,4 +26,5 @@ all:
 	@echo "Nothing to do, use install target to install scripts"
 
 install: $(SOURCE)
+	@echo "Installing scripts to $(PREFIX)..."
 	cp $(SOURCE) $(PREFIX)
