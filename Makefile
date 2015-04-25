@@ -3,6 +3,7 @@ battery_check.sh \
 bibtex2yaml.rb \
 check_export.sh \
 driving.py \
+driving.sh \
 dropbox.py \
 fix_whitespace \
 getudid.sh \
