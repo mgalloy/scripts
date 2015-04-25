@@ -25,8 +25,8 @@ if __name__ == '__main__':
     with open(args.input, 'rt') as csv_file:
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
-            trip_start = ', '.join(row[0:2])
-            trip_mileage = row[12]
+            trip_start = row[0]
+            trip_mileage = row[11]
             dt = datetime.datetime.strptime(trip_start, ingest_date_format)
             day = dt.strftime(output_date_format)
             weeks[day] += float(trip_mileage)
