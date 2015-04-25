@@ -16,7 +16,7 @@ def output(weeks, out):
         out.write('{0}, {1}\n'.format(d, weeks[d]))
 
     out.write('"Colors","Red"\n')
-    out.write('"Totals"\n')
+    # out.write('"Totals"\n')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Summarize trips to weekly miles')
