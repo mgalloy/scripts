@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-INPUT=$HOME/Dropbox/driving/driving.csv
+INPUT=$HOME/Dropbox/driving/automatictrips.csv.txt
 BIN_DIR=$HOME/bin
 DATA_DIR=$HOME/data
 OUTPUT=$DATA_DIR/weekly-driving.csv
