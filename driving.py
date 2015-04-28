@@ -28,6 +28,7 @@ if __name__ == '__main__':
     with open(args.input, 'rt') as csv_file:
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
+            if len(row) < 11: continue
             trip_start = row[0]
             trip_mileage = row[10]
             dt = datetime.datetime.strptime(trip_start, ingest_date_format)
