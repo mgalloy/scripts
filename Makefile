@@ -16,6 +16,7 @@ moves_refreshtoken.py \
 reindex_mailapp.sh \
 sms \
 svn_add_unknown.sh \
+update_book_sales.py \
 update_software.sh \
 update_status.py \
 video2huffduffer
