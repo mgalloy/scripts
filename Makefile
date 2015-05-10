@@ -19,7 +19,9 @@ svn_add_unknown.sh \
 update_book_sales.py \
 update_software.sh \
 update_status.py \
-video2huffduffer
+video2huffduffer \
+wp.py \
+wp.sh
 
 PREFIX=$(HOME)/bin
 

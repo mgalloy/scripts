@@ -3,9 +3,9 @@
 LOG_DIR=/Users/mgalloy/data
 LOG=$LOG_DIR/wp.sh.log
 
-/usr/bin/php /Users/mgalloy/bin/wp.php >> $LOG 2>&1
+/Users/mgalloy/bin/wp.py --data_dir $LOG_DIR >> $LOG 2>&1
 
-/usr/bin/scp -i ~mgalloy/.ssh/id_dsa2 $LOG_DIR/sitestats.csv idldev.com:~/data.idldev.com >> $LOG 2>&1
+/usr/bin/scp -i ~mgalloy/.ssh/id_dsa2 $LOG_DIR/sitestats.json idldev.com:~/data.idldev.com >> $LOG 2>&1
 
 d=`date`
 user=`whoami`
