@@ -29,7 +29,7 @@ if __name__ == '__main__':
     output = {'graph':
                 {'title': 'michaelgalloy.com',
                  'type': 'bar',
-                 'datasequences': [{'title': 'Traffice',
+                 'datasequences': [{'title': 'Traffic',
                                     'color': 'yellow',
                                     'datapoints': data}]}}
     with open(os.path.join(args.data_dir, FILENAME), 'w') as f:

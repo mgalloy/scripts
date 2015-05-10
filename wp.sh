@@ -2,8 +2,9 @@
 
 LOG_DIR=/Users/mgalloy/data
 LOG=$LOG_DIR/wp.sh.log
+PYTHON=/Users/mgalloy/anaconda/bin/python
 
-/Users/mgalloy/bin/wp.py --data_dir $LOG_DIR >> $LOG 2>&1
+$PYTHON /Users/mgalloy/bin/wp.py --data_dir $LOG_DIR >> $LOG 2>&1
 
 /usr/bin/scp -i ~mgalloy/.ssh/id_dsa2 $LOG_DIR/sitestats.json idldev.com:~/data.idldev.com >> $LOG 2>&1
 
