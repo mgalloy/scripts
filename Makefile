@@ -10,6 +10,7 @@ getudid.sh \
 hex \
 jenkins_statusboard \
 makeappicons.sh \
+menu.py \
 moves.py \
 moves.sh \
 moves_refreshtoken.py \
