@@ -2,6 +2,7 @@ SOURCE=allup \
 battery_check.sh \
 bibtex2yaml.rb \
 check_export.sh \
+clean_openwith_db.sh \
 driving.py \
 driving.sh \
 dropbox.py \
