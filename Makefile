@@ -8,6 +8,7 @@ driving.sh \
 dropbox.py \
 fix_whitespace \
 getudid.sh \
+gitbr \
 hex \
 jenkins_statusboard \
 makeappicons.sh \
