@@ -15,6 +15,7 @@ menu.py \
 moves.py \
 moves.sh \
 moves_refreshtoken.py \
+nb2md \
 reindex_mailapp.sh \
 sms \
 svn_add_unknown.sh \

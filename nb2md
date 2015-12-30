@@ -1,3 +1,3 @@
-#!/usr/bin/sh
+#!/bin/sh
 
-jupyter nbconvert --to markdown $1 --stdout --log-level=0
+ipython nbconvert --to markdown $1 --stdout --log-level=0
