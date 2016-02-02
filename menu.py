@@ -10,6 +10,8 @@ URL = 'http://www2.ucar.edu/for-staff/daily/menu'
 def has_class(tag):
     return tag.has_attr('class') and 'views-field-field-date-required' in tag['class']
 
+def has_cg(tag):
+    return tag.get_text()[:3] == 'CG:'
 
 def get_menu_page(url):
     r = requests.get(url)
@@ -18,7 +20,7 @@ def get_menu_page(url):
 
 def get_menu(url):
     html_doc = get_menu_page(url)
-    soup = BeautifulSoup(html_doc)
+    soup = BeautifulSoup(html_doc, 'lxml')
     dates = soup.find_all(has_class)
     today = dates[0]
     today_string = ''.join(today.stripped_strings)
@@ -43,7 +45,11 @@ def get_menu(url):
 
     lunch_string += sstrings[-1]
 
-    return [today_string, underscores, breakfast_string, lunch_string]
+    cg = soup.find_all(has_cg)
+    cg_winner = cg[0].get_text()
+    cg_winner = ' '.join(cg_winner.split())
+
+    return [today_string, underscores, cg_winner, '', breakfast_string, lunch_string]
 
 
 if __name__ == "__main__":
