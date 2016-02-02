@@ -1,6 +1,7 @@
 SOURCE=allup \
 battery_check.sh \
 bibtex2yaml.rb \
+cafe_winner.py \
 check_export.sh \
 clean_openwith_db.sh \
 driving.py \
