@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ipython nbconvert --to markdown "$1" --stdout --log-level=0
