@@ -11,6 +11,7 @@ fix_whitespace \
 getudid.sh \
 hex \
 jenkins_statusboard \
+make_download \
 makeappicons.sh \
 menu.py \
 moves.py \
