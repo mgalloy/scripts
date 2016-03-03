@@ -10,6 +10,7 @@ dropbox.py \
 fix_whitespace \
 getudid.sh \
 hex \
+imgcat \
 jenkins_statusboard \
 make_download \
 makeappicons.sh \
