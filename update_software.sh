@@ -29,6 +29,13 @@ fi
 
 CONDA_FOUND=`which conda 2> /dev/null`
 if [ -n "$CONDA_FOUND" ]; then
+  stamp conda clean
+  if conda clean -tipsy >> $DATA_DIR/conda-clean.log 2>&1; then
+    $ECHO_CMD "conda cleaned"
+  else
+    $ECHO_CMD "Problem cleaning conda"
+  fi
+
   stamp conda update
   if yes | conda update conda >> $DATA_DIR/conda-update.log 2>&1; then
     $ECHO_CMD "conda updated"
