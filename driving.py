@@ -27,13 +27,16 @@ if __name__ == '__main__':
     weeks = defaultdict(float)
     with open(args.input, 'rt') as csv_file:
         csv_reader = csv.reader(csv_file)
-        for row in csv_reader:
+        for row_number, row in enumerate(csv_reader):
             if len(row) < 11: continue
-            trip_start = row[0]
-            trip_mileage = row[10]
-            dt = datetime.datetime.strptime(trip_start, ingest_date_format)
-            day = dt.strftime(output_date_format)
-            weeks[day] += float(trip_mileage)
+            try:
+              trip_start = row[0]
+              trip_mileage = row[10]
+              dt = datetime.datetime.strptime(trip_start, ingest_date_format)
+              day = dt.strftime(output_date_format)
+              weeks[day] += float(trip_mileage)
+            except:
+              print 'error parsing line %d' % (row_number + 1, )
 
     if args.output is None:
         output(weeks, sys.stdout)
