@@ -11,7 +11,7 @@ output_date_format = '%Y-%W'
 
 
 def output(weeks, out):
-    out.write('"Mileage","Subaru"\n')
+    out.write('"Mileage","Honda Fit"\n')
     for d in sorted(weeks):
         out.write('{0}, {1}\n'.format(d, weeks[d]))
 
