@@ -54,6 +54,12 @@ fi
 
 BREW_FOUND=`which brew 2> /dev/null`
 if [ -n "$BREW_FOUND" ]; then
+  stamp brew cleanup
+  if brew cleanup -s >> $DATA_DIR/brew-update.log 2>&1; then
+    $ECHO_CMD "homebrew cleaned"
+  else
+    $ECHO_CMD "Problem cleaning homebrew"
+  fi
   stamp brew update
   if brew update >> $DATA_DIR/brew-update.log 2>&1; then
     $ECHO_CMD "homebrew updated"
