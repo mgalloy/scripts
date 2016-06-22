@@ -37,10 +37,10 @@ if [ -n "$CONDA_FOUND" ]; then
   fi
 
   stamp conda update
-  if yes | conda update conda >> $DATA_DIR/conda-update.log 2>&1; then
+  if conda update -yq conda >> $DATA_DIR/conda-update.log 2>&1; then
     $ECHO_CMD "conda updated"
     stamp anaconda update
-    if yes | conda update anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
+    if conda update -yq anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
       $ECHO_CMD "anaconda updated"
       conda list > $DATA_DIR/conda-list.log 2>&1
     else
