@@ -33,7 +33,7 @@ if [ -n "$CONDA_FOUND" ]; then
   if conda clean -tipsy >> $DATA_DIR/conda-clean.log 2>&1; then
     $ECHO_CMD "conda cleaned"
   else
-    $ECHO_CMD "Problem cleaning conda"
+    $ECHO_CMD "problem cleaning conda"
   fi
 
   stamp conda update
@@ -42,12 +42,18 @@ if [ -n "$CONDA_FOUND" ]; then
     stamp anaconda update
     if conda update -yq anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
       $ECHO_CMD "anaconda updated"
+      stamp conda-packages update
+      if conda update -yq --all >> $DATA_DIR/conda-packages-update.log 2>&1; then
+        $ECHO_CMD "conda packages updated"
+      else
+        $ECHO_CMD "problem updating conda packages"
+      fi
       conda list > $DATA_DIR/conda-list.log 2>&1
     else
-      $ECHO_CMD "Problem updating anaconda"
+      $ECHO_CMD "problem updating anaconda"
     fi
   else
-    $ECHO_CMD "Problem updating conda"
+    $ECHO_CMD "problem updating conda"
   fi
 fi
 
