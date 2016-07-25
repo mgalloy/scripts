@@ -49,6 +49,7 @@ if [ -n "$CONDA_FOUND" ]; then
         $ECHO_CMD "problem updating conda packages"
       fi
       conda list > $DATA_DIR/conda-list.log 2>&1
+      conda list --export > $DATA_DIR/conda-list-export.log 2>&1
     else
       $ECHO_CMD "problem updating anaconda"
     fi
