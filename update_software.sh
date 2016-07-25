@@ -42,12 +42,13 @@ if [ -n "$CONDA_FOUND" ]; then
     stamp anaconda update
     if conda update -yq anaconda >> $DATA_DIR/anaconda-update.log 2>&1; then
       $ECHO_CMD "anaconda updated"
-      stamp conda-packages update
-      if conda update -yq --all >> $DATA_DIR/conda-packages-update.log 2>&1; then
-        $ECHO_CMD "conda packages updated"
-      else
-        $ECHO_CMD "problem updating conda packages"
-      fi
+      # either use anaconda package or update --all
+      # stamp conda-packages update
+      # if conda update -yq --all >> $DATA_DIR/conda-packages-update.log 2>&1; then
+      #   $ECHO_CMD "conda packages updated"
+      # else
+      #   $ECHO_CMD "problem updating conda packages"
+      # fi
       conda list > $DATA_DIR/conda-list.log 2>&1
       conda list --export > $DATA_DIR/conda-list-export.log 2>&1
     else
