@@ -33,6 +33,6 @@ if __name__ == '__main__':
             if args.verbose:
                 print 'Message sent to providers by Textbelt'
         else:
-            print 'FAILURE: Message not sent to providers by Textbelt'
+            print 'FAILURE: Message not sent to providers by Textbelt (%s)' % content['message']
     else:
         print 'FAILURE: Message not received by Textbelt'
