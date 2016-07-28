@@ -22,6 +22,7 @@ nb2md \
 reindex_mailapp.sh \
 sms \
 svn_add_unknown.sh \
+textbelt \
 update_book_sales.py \
 update_software.sh \
 update_status.py \

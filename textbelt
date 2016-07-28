@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+import argparse
+import json
+
+import requests
+
+
+TEXTBELT_URL = 'http://textbelt.com/text'
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Send SMS message')
+    parser.add_argument('-n', dest='phone_number', required=True,
+                      help='phone number without punctuation, e.g., 5551234567')
+    parser.add_argument('-m', dest='message', required=True,
+                        help='text of message')
+    parser.add_argument('-v', action='store_true', dest='verbose', default=False,
+                        help='verbose mode')
+    args = parser.parse_args()
+
+    if args.verbose:
+        print 'sending "%s" to %s' % (args.message, args.phone_number)
+
+    data = {'message': args.message, 'number': args.phone_number}
+    r = requests.post(TEXTBELT_URL, data=data)
+
+    if r.ok:
+        content = json.loads(r.content)
+        if args.verbose:
+            print 'Message received by Textbelt with status code: %d' % r.status_code
+        if content['success']:
+            if args.verbose:
+                print 'Message sent to providers by Textbelt'
+        else:
+            print 'FAILURE: Message not sent to providers by Textbelt'
+    else:
+        print 'FAILURE: Message not received by Textbelt'
