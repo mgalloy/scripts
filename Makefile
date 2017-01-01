@@ -11,6 +11,7 @@ fix_whitespace \
 getudid.sh \
 hex \
 imgcat \
+init_anaconda.sh \
 jenkins_statusboard \
 make_download \
 makeappicons.sh \
