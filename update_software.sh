@@ -27,7 +27,8 @@ if [ ! -d $DATA_DIR ]; then
 fi
 
 
-CONDA_FOUND=`which conda 2> /dev/null`
+#CONDA_FOUND=`which conda 2> /dev/null`
+CONDA_FOUND=
 if [ -n "$CONDA_FOUND" ]; then
   stamp conda clean Cleaning
   if conda clean -tipsy >> $DATA_DIR/conda-clean.log 2>&1; then
