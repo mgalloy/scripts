@@ -43,4 +43,4 @@ all:
 install: $(SOURCE)
 	@echo "Installing scripts to $(PREFIX)..."
 	cp $(SOURCE) $(PREFIX)
-	@if [ `uname` == 'Darwin' ]; then cp $(DARWIN_SOURCE) $(PREFIX); fi
+	if [ `uname` == 'Darwin' ]; then cp $(DARWIN_SOURCE) $(PREFIX); fi
