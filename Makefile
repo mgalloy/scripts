@@ -6,6 +6,7 @@ clean_openwith_db.sh \
 driving.py \
 driving.sh \
 dropbox.py \
+events2ics \
 fix_whitespace \
 imgcat \
 init_anaconda.sh \
@@ -26,7 +27,8 @@ update_status.py \
 wp.py \
 wp.sh
 
-DARWIN_SOURCE=battery_check.sh \
+DARWIN_SOURCE=backedup.sh \
+battery_check.sh \
 getudid.sh \
 hex \
 reindex_mailapp.sh \

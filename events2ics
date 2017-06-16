@@ -4,6 +4,8 @@ import argparse
 import re
 
 EVENT_RE = '(\d+)/(\d+) (\d+)(:\d+)? (am|pm) to (\d+)(:\d+)? (am|pm) (.+) @ (.+)'
+TIME_RE = '(\d+):(\d+) (am|pm)'
+DATE_RE = '(\d+)/(\d+)'
 
 '''
 Convert a listing of events to an .ics calendar file.
@@ -13,15 +15,36 @@ Events filename format is:
   7/4 6 pm to 9:30 pm BBQ @ Home
 '''
 
+def convert_date(date, time):
+    time_re = re.compile(TIME_RE)
+    date_re = re.compile(DATE_RE)
+
+    time_match = time_re.match(time)
+    date_match = date_re.match(date)
+
+    time_groups = time_match.groups()
+    date_groups = date_match.groups()
+
+    hours = int(time_groups[0])
+    minutes = int(time_groups[1])
+    if time_groups[2].lower() == 'pm':
+        hours += 12
+
+    year = int(2017)
+    month = int(date_groups[0])
+    day = int(date_groups[1])
+
+    return '%04d%02d%02dT%02d%02d00' % (year, month, day, hours, minutes)
+
 def print_calendar_header():
     print('BEGIN:VCALENDAR')
-    print('PRODID:-//Evite//Evite.com 1.0//EN')
+    print('PRODID:-//michaelgalloy//michaelgalloy.com 1.0//EN')
     print('VERSION:2.0')
 
 def print_calendar_footer():
     print('END:VCALENDAR')
 
-def print_event(date, start_time, end_time, title, location):
+def print_event(date, start_time, end_time, timezone, title, location):
     '''An event looks like:
 
          BEGIN:VEVENT
@@ -33,6 +56,8 @@ def print_event(date, start_time, end_time, title, location):
          LOCATION:Katie & Dave's Backyard 609 Marine St Boulder CO 80302
          END:VEVENT'''
     print('BEGIN:VEVENT')
+    print('DTSTART;TZID=%s:%s' % (timezone, convert_date(date, start_time)))
+    print('DTEND;TZID=%s:%s' % (timezone, convert_date(date, end_time)))
     print('SUMMARY:%s' % title)
     print('LOCATION:%s' % location)
     print('END:VEVENT')
@@ -40,6 +65,7 @@ def print_event(date, start_time, end_time, title, location):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='convert event listing to ics file')
     parser.add_argument('events', help='events filename')
+    parser.add_argument('-t', '--timezone', help='timezone, i.e., America/Denver', default='America/Denver')
     args = parser.parse_args()
 
     event_re = re.compile(EVENT_RE)
@@ -55,5 +81,5 @@ if __name__ == '__main__':
                 end_time = '%s%s %s' % (groups[5], groups[6] if groups[6] is not None else ':00', groups[7])
                 title = groups[8]
                 location = groups[9]
-                print_event(date, start_time, end_time, title, location)
+                print_event(date, start_time, end_time, args.timezone, title, location)
     print_calendar_footer()
