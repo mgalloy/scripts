@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+
+import argparse
+import re
+
+EVENT_RE = '(\d+)/(\d+) (\d+)(:\d+)? (am|pm) to (\d+)(:\d+)? (am|pm) (.+) @ (.+)'
+
+'''
+Convert a listing of events to an .ics calendar file.
+
+Events filename format is:
+
+  7/4 6 pm to 9:30 pm BBQ @ Home
+'''
+
+def print_calendar_header():
+    print('BEGIN:VCALENDAR')
+    print('PRODID:-//Evite//Evite.com 1.0//EN')
+    print('VERSION:2.0')
+
+def print_calendar_footer():
+    print('END:VCALENDAR')
+
+def print_event(date, start_time, end_time, title, location):
+    '''An event looks like:
+
+         BEGIN:VEVENT
+         DTSTART:20170603T160000
+         DTEND:20170603T210000
+         SUMMARY:Backyard BBQ
+         CATEGORIES:
+         DESCRIPTION:For details, click here: http://www.evite.com/event/0111CUTIWD324UWNAEPHITJHYROW7A?gid=020E64BWSS4O6I2RQEPHI5E4S7EVY4
+         LOCATION:Katie & Dave's Backyard 609 Marine St Boulder CO 80302
+         END:VEVENT'''
+    print('BEGIN:VEVENT')
+    print('SUMMARY:%s' % title)
+    print('LOCATION:%s' % location)
+    print('END:VEVENT')
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='convert event listing to ics file')
+    parser.add_argument('events', help='events filename')
+    args = parser.parse_args()
+
+    event_re = re.compile(EVENT_RE)
+
+    print_calendar_header()
+    with open(args.events, 'r') as events_file:
+        for event_line in events_file:
+            event_match = event_re.match(event_line)
+            if event_match:
+                groups = event_match.groups()
+                date = '%s/%s' % (groups[0], groups[1])
+                start_time = '%s%s %s' % (groups[2], groups[3] if groups[3] is not None else ':00', groups[4])
+                end_time = '%s%s %s' % (groups[5], groups[6] if groups[6] is not None else ':00', groups[7])
+                title = groups[8]
+                location = groups[9]
+                print_event(date, start_time, end_time, title, location)
+    print_calendar_footer()
