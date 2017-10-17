@@ -28,11 +28,13 @@ if __name__ == '__main__':
   else:
     datapoints = [datapt]
     result = {'graph': {'datasequences': [{ 'datapoints': datapoints,
-                                            'title': 'Speed' }],
+                                            'title': 'Home @ 3 am' }],
                         'total': False,
                         'type': 'line',
                         'refreshEveryNSeconds': 3600,
-                        'title': 'Speed (Mbs)'}
+                        'title': 'Internet speed',
+                        'yAxis': {'minValue': 0, 'maxValue': 150, 'units': {'suffix': 'Mbs'}}
+                      }
               }
 
   # update json file
