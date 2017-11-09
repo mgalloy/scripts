@@ -9,6 +9,7 @@ driving.py \
 driving.sh \
 dropbox.py \
 events2ics \
+fitscat \
 fix_whitespace \
 imgcat \
 init_anaconda.sh \

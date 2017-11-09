@@ -2,11 +2,12 @@
 
 import argparse
 import base64
+import os
+import StringIO
 
 from astropy.io import fits
 import numpy as np
 from PIL import Image
-import StringIO
 
 
 def none_filter(x):
@@ -19,6 +20,29 @@ def sqrt_filter(x):
 
 def log_filter(x):
     return np.log1p(x)
+
+
+def create_slices(slices):
+    new_slices = []
+    for s in slices.split(','):
+        parts = s.split(':')
+        if len(parts) == 1:
+            start = int(parts[0]) if parts[0] != '' else None
+            new_slices.append(slice(start, start + 1))
+        elif len(parts) == 2:
+            start = int(parts[0]) if parts[0] != '' else None
+            end = int(parts[1]) if parts[1] != '' else None
+            new_slices.append(slice(start, end))
+        elif len(parts) == 3:
+            start = int(parts[0]) if parts[0] != '' else None
+            end = int(parts[1]) if parts[1] != '' else None
+            stride = int(parts[2]) if parts[2] != '' else None
+            new_slices.append(slice(start, end, stride))
+        else:
+            print('invalid slice notation: %s' % s)
+            return None
+
+    return new_slices
 
 
 def byte_scale(data, min=None, max=None, debug=False):
@@ -43,16 +67,27 @@ def byte_scale(data, min=None, max=None, debug=False):
     return new_data.astype(np.ubyte)
 
 
-def print_osc():
-    pass
+def pre_osc(screen=False):
+    return '\x1bPtmux;\x1b\x1b]' if screen else '\x1b]'
+
+
+def post_osc(screen=False):
+    return '\a\x1b\\' if screen else '\a'
 
 
 def display_image(data, debug=False):
-    dims = data.shape
+    '''For more about the protocol to display images at the terminal in iTerm 2,
+       see https://iterm2.com/documentation-images.html'''
+    term = os.environ['TERM']
+    screen = term.startswith('screen')
+
     im = Image.fromarray(data)
     output = StringIO.StringIO()
     im.save(output, 'PNG')
-    print('\x1b]1337;File=inline=1;width=%dpx;height=%dpx:%s\a' % (dims[0], dims[1], base64.b64encode(output.getvalue())))
+
+    s = base64.b64encode(output.getvalue())
+
+    print('%s1337;File=inline=1;width=auto;height=auto:%s%s' % (pre_osc(screen), s, post_osc(screen)))
 
 
 def main():
@@ -69,6 +104,7 @@ def main():
     parser.add_argument('-r', '--header', action='store_true', help='set to display header')
     parser.add_argument('-e', '--exten_no', type=int, default=0, help='specify extension')
     parser.add_argument('-f', '--filter', type=str, default='none', help='specify filter (default: none)')
+    parser.add_argument('-s', '--slice', type=str, default=None, help='specify slice of data array to display')
 
     args = parser.parse_args()
 
@@ -87,10 +123,18 @@ def main():
             ndims = len(data.shape)
             dims = data.shape
 
-            if ndims == 3:
-                data = data[0, : , :].reshape(dims[1], dims[2])
-            if ndims == 4:
-                data = data[0, 0, : , :].reshape(dims[2], dims[3])
+            if args.slice is not None:
+                indices = create_slices(args.slice)
+                data = data[tuple(indices)].squeeze()
+
+            ndims = len(data.shape)
+            if ndims != 2:
+                print('bad number of dimensions: %d' % ndims)
+                return
+
+            if args.debug:
+                dims = data.shape
+                print('%s %d x %d'% (data.dtype, dims[0], dims[1]))
 
             data = filters[args.filter](data)
             byte_data = byte_scale(data, min=args.min, max=args.max, debug=args.debug)
