@@ -3,7 +3,14 @@
 import argparse
 import base64
 import os
-import StringIO
+import sys
+
+PY3 = sys.version_info > (3, 0)
+
+if PY3:
+    from io import BytesIO as IO
+else:
+    from StringIO import StringIO as IO
 
 from astropy.io import fits
 import numpy as np
@@ -82,12 +89,20 @@ def display_image(data, debug=False):
     screen = term.startswith('screen')
 
     im = Image.fromarray(data)
-    output = StringIO.StringIO()
+    output = IO()
     im.save(output, 'PNG')
 
-    s = base64.b64encode(output.getvalue())
+    im_bytes = base64.b64encode(output.getvalue())
 
-    print('%s1337;File=inline=1;width=auto;height=auto:%s%s' % (pre_osc(screen), s, post_osc(screen)))
+    # a sequence of bytes in Python 2 is a string, but in Python 3 it must be
+    # decoded via a Unicode encoding
+    if PY3:
+        im_str = im_bytes.decode('latin1')
+    else:
+        im_str = im_bytes
+
+    iterm_format = '%s1337;File=inline=1;width=auto;height=auto:%s%s'
+    print(iterm_format % (pre_osc(screen), im_str, post_osc(screen)))
 
 
 def main():
