@@ -11,6 +11,7 @@ FOLDER=$2
 
 mkdir -p ${FOLDER}
 
+sips -z 20 20 "$INPUT_IMAGE" --out "${FOLDER}/Icon-20.png"
 sips -z 40 40 "$INPUT_IMAGE" --out "${FOLDER}/Icon-20@2x.png"
 sips -z 60 60 "$INPUT_IMAGE" --out "${FOLDER}/Icon-20@3x.png"
 
