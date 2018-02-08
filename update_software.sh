@@ -80,7 +80,7 @@ if [ -n "$BREW_FOUND" ]; then
       done
       stamp brew upgrade Upgrading
       if brew upgrade >> $DATA_DIR/brew-upgrade.log 2>&1; then
-        $ECHO_CMD "homebrew formulas upgraded"
+        $ECHO_CMD "👍  homebrew formulas upgraded"
         brew leaves > $DATA_DIR/brew-leaves.log 2>&1
       else
         $ECHO_CMD "💩  problem upgrading homebrew formula"
