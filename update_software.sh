@@ -92,3 +92,5 @@ if [ -n "$BREW_FOUND" ]; then
     $ECHO_CMD "💩  problem updating homebrew"
   fi
 fi
+
+date +"📅  %a %Y-%m-%d %H:%M:%S"
