@@ -93,4 +93,4 @@ if [ -n "$BREW_FOUND" ]; then
   fi
 fi
 
-date +"📅  %a %Y-%m-%d %H:%M:%S"
+date +"%a %Y-%m-%d %H:%M:%S"
