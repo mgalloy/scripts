@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import re
 
 EVENT_RE = '(\d+)/(\d+) (\d+)(:\d+)? (am|pm) to (\d+)(:\d+)? (am|pm) (.+) @ (.+)'
@@ -30,7 +31,7 @@ def convert_date(date, time):
     if time_groups[2].lower() == 'pm':
         hours += 12
 
-    year = int(2017)
+    year = datetime.datetime.now().year
     month = int(date_groups[0])
     day = int(date_groups[1])
 
