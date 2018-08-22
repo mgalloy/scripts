@@ -33,7 +33,7 @@ if __name__ == '__main__':
                         'type': 'line',
                         'refreshEveryNSeconds': 3600,
                         'title': 'Internet speed',
-                        'yAxis': {'minValue': 0, 'maxValue': 150, 'units': {'suffix': 'Mbs'}}
+                        'yAxis': {'minValue': 0, 'maxValue': 200, 'units': {'suffix': 'Mbs'}}
                       }
               }
 
