@@ -5,6 +5,7 @@ check_export.sh \
 check_speed.py \
 check_speed.sh \
 clean_openwith_db.sh \
+cls \
 driving.py \
 driving.sh \
 dropbox.py \
