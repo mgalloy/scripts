@@ -105,7 +105,7 @@ def list_spec(files):
 
 if __name__ == '__main__':
     version = '0.0.1'
-    name = f'MLSO ls clustering utility {version}'
+    name = f'Clustered ls {version}'
     parser = argparse.ArgumentParser(description=name)
     parser.add_argument('files', type=str, nargs='*',
                         help='path specification to check', default='.')
