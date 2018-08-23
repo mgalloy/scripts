@@ -8,7 +8,9 @@ import re
 
 
 DELIMS = '-._'
-SEP = re.compile(f'[{DELIMS}]')
+SEP = re.compile(f'([{DELIMS}])')
+
+MAX_LISTED = 4
 
 
 '''
@@ -63,6 +65,80 @@ kcor_current_month_report.sh
 '''
 
 
+def print_subgroup(subgroup, diff_loc):
+    n = len(subgroup)
+    if n == 1:
+        print(subgroup[0][0])
+    elif n < MAX_LISTED:
+        parts = ','.join([s[1][diff_loc] for s in subgroup])
+        s = subgroup[0][1]
+        pattern = ''.join(s[:diff_loc] + ['{' + parts + '}'] + s[diff_loc + 1:])
+        print(pattern)
+    else:
+        s = subgroup[0][1]
+        pattern = ''.join(s[:diff_loc] + ['*'] + s[diff_loc + 1:])
+        print(f'{pattern}: {n} files')
+
+
+def match_except_one(g1, g2):
+    n_nonmatches = 0
+    diff_loc = -1
+    for i, (gl1, gl2) in enumerate(zip(g1[1], g2[1])):
+        if gl1 != gl2:
+            n_nonmatches += 1
+            diff_loc = i
+
+    return (True, diff_loc) if n_nonmatches == 1 else (False, -1)
+
+
+def find_subgroups_naive(group):
+    '''Return list of tuples (subgroup, diff_loc).'''
+    subgroups = []
+
+    # naive match
+    for g1, g2 in itertools.combinations(group, r=2):
+        print(f'{g1[0]} and {g2[0]}')
+        match, diff_loc = match_except_one(g1, g2)
+        if match:
+            if len(subgroups) == 0:
+                subgroups.append(([g1, g2], diff_loc))
+            else:
+                for s in subgroups:
+                    smatch, sdiff_loc = match_except_one(g1, s[0][0])
+                    if smatch and sdiff_loc == diff_loc:
+                        s[0].append(g2)
+                        break
+                else:
+                    subgroups.append(([g1, g2], diff_loc))
+
+    # find unmatched
+    unmatched = []
+    for g in group:
+        found = False
+        for s in subgroups:
+            if found: break
+            for i in s[0]:
+                if g[0] == i[0]:
+                    found = True
+                    break
+        if not found:
+            unmatched.append(g)
+        else:
+            found = False
+
+    # match unmatched
+    if len(unmatched) == 1:
+        pass
+
+    return subgroups
+
+
+def list_grouped_files(group):
+    '''List files in groups.'''
+    for s, d in find_subgroups_naive(group):
+        print_subgroup(s, d)
+
+
 def list_files(filenames):
     dots = [SEP.split(f) for f in filenames]
     sorted_filenames = sorted(zip(filenames, dots), key=lambda x: len(x[1]))
@@ -78,9 +154,10 @@ def list_files(filenames):
         elif n == 1:
             print(filenames[0])
         else:
+            list_grouped_files(group)
             # TODO: replace this with something smarter
-            print(f'{n} files with {n_parts}')
-            print(', '.join(filenames))
+            #print(f'{n} files with {n_parts}')
+            #print(', '.join(filenames))
 
 
 def list_dir(dirname, multiple=False):
