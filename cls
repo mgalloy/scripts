@@ -64,6 +64,15 @@ hpss-FS-UC.log
 kcor_current_month_report.sh
 '''
 
+class Location:
+    value = -1
+
+    def __init__(self, v):
+        self.value = v
+
+    def __repr__(self):
+        return f'Location({self.value})'
+
 
 def print_subgroup(subgroup, diff_loc):
     n = len(subgroup)
@@ -95,40 +104,22 @@ def find_subgroups_naive(group):
     '''Return list of tuples (subgroup, diff_loc).'''
     subgroups = []
 
-    # naive match
-    for g1, g2 in itertools.combinations(group, r=2):
-        print(f'{g1[0]} and {g2[0]}')
-        match, diff_loc = match_except_one(g1, g2)
-        if match:
-            if len(subgroups) == 0:
-                subgroups.append(([g1, g2], diff_loc))
-            else:
-                for s in subgroups:
-                    smatch, sdiff_loc = match_except_one(g1, s[0][0])
-                    if smatch and sdiff_loc == diff_loc:
-                        s[0].append(g2)
-                        break
-                else:
-                    subgroups.append(([g1, g2], diff_loc))
-
-    # find unmatched
-    unmatched = []
     for g in group:
-        found = False
-        for s in subgroups:
-            if found: break
-            for i in s[0]:
-                if g[0] == i[0]:
-                    found = True
-                    break
-        if not found:
-            unmatched.append(g)
+        if len(subgroups) == 0:
+            subgroups.append(([g], Location(-1)))
         else:
-            found = False
-
-    # match unmatched
-    if len(unmatched) == 1:
-        pass
+            for s in subgroups:
+                match, diff_loc = match_except_one(g, s[0][0])
+                if match:
+                    if s[1].value == -1:
+                        s[0].append(g)
+                        s[1].value = diff_loc
+                        break
+                    elif s[1].value == diff_loc:
+                        s[0].append(g)
+                        break
+            else:
+                subgroups.append(([g], Location(-1)))
 
     return subgroups
 
@@ -136,7 +127,7 @@ def find_subgroups_naive(group):
 def list_grouped_files(group):
     '''List files in groups.'''
     for s, d in find_subgroups_naive(group):
-        print_subgroup(s, d)
+        print_subgroup(s, d.value)
 
 
 def list_files(filenames):
