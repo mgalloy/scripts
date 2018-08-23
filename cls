@@ -10,8 +10,6 @@ import re
 DELIMS = '-._'
 SEP = re.compile(f'([{DELIMS}])')
 
-MAX_LISTED = 4
-
 
 '''
 For a directory with the following listing:
@@ -74,19 +72,22 @@ class Location:
         return f'Location({self.value})'
 
 
-def print_subgroup(subgroup, diff_loc):
+def print_subgroup(subgroup, diff_loc, output, max_listed=3):
     n = len(subgroup)
     if n == 1:
-        print(subgroup[0][0])
-    elif n < MAX_LISTED:
-        parts = ','.join([s[1][diff_loc] for s in subgroup])
+        output.append(subgroup[0][0])
+    elif n <= max_listed:
+        parts = [s[1][diff_loc] for s in subgroup]
+        sorted_parts = sorted(parts, key=str.lower)
         s = subgroup[0][1]
-        pattern = ''.join(s[:diff_loc] + ['{' + parts + '}'] + s[diff_loc + 1:])
-        print(pattern)
+        pattern = ''.join(s[:diff_loc]
+                          + ['{' + ','.join(sorted_parts) + '}']
+                          + s[diff_loc + 1:])
+        output.append(pattern)
     else:
         s = subgroup[0][1]
         pattern = ''.join(s[:diff_loc] + ['*'] + s[diff_loc + 1:])
-        print(f'{pattern}: {n} files')
+        output.append(f'{pattern} [{n} files]')
 
 
 def match_except_one(g1, g2):
@@ -124,13 +125,14 @@ def find_subgroups_naive(group):
     return subgroups
 
 
-def list_grouped_files(group):
+def list_grouped_files(group, output, **kwargs):
     '''List files in groups.'''
     for s, d in find_subgroups_naive(group):
-        print_subgroup(s, d.value)
+        print_subgroup(s, d.value, output, **kwargs)
 
 
-def list_files(filenames):
+def list_files(filenames, **kwargs):
+    output = []
     dots = [SEP.split(f) for f in filenames]
     sorted_filenames = sorted(zip(filenames, dots), key=lambda x: len(x[1]))
     for e, group in itertools.groupby(sorted_filenames, lambda x: len(x[1])):
@@ -141,34 +143,35 @@ def list_files(filenames):
         n_parts = len(parts[0])
         if n_parts == 1:
             for f in filenames:
-                print(f)
+                output.append(f)
         elif n == 1:
-            print(filenames[0])
+            output.append(filenames[0])
         else:
-            list_grouped_files(group)
-            # TODO: replace this with something smarter
-            #print(f'{n} files with {n_parts}')
-            #print(', '.join(filenames))
+            list_grouped_files(group, output, **kwargs)
+
+    sorted_output = sorted(output, key=str.lower)
+    for o in sorted_output:
+        print(o)
 
 
-def list_dir(dirname, multiple=False):
+def list_dir(dirname, multiple=False, **kwargs):
     children = [os.path.basename(c) for c in glob.glob(os.path.join(dirname, '*'))]
     if multiple: print(f'{dirname}:')
-    list_files(children)
+    list_files(children, **kwargs)
 
 
-def list_spec(files):
+def list_spec(files, **kwargs):
     filenames = [f for f in files if os.path.isfile(f)]
     dirnames = [d for d in files if os.path.isdir(d)]
 
-    list_files(filenames)
+    list_files(filenames, **kwargs)
 
     if len(filenames) > 0 and len(dirnames) > 0:
         print()
 
     for i, d in enumerate(dirnames):
         if i > 0: print()
-        list_dir(d, multiple=len(files) > 1)
+        list_dir(d, multiple=len(files) > 1, **kwargs)
 
 
 if __name__ == '__main__':
@@ -177,6 +180,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=name)
     parser.add_argument('files', type=str, nargs='*',
                         help='path specification to check', default='.')
+    parser.add_argument('-m', '--max-listed', type=int, default=3,
+                        help='max number of files to explicitly list')
     args = parser.parse_args()
 
-    list_spec(args.files)
+    list_spec(args.files, max_listed=args.max_listed)
