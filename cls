@@ -9,7 +9,7 @@ import re
 
 DELIMS = '-._'
 SEP = re.compile(f'([{DELIMS}])')
-
+EXT_SEP = re.compile(f'([.])')
 
 '''
 For a directory with the following listing:
@@ -149,10 +149,18 @@ def list_files(filenames, **kwargs):
         else:
             list_grouped_files(group, output, **kwargs)
 
-    sorted_output = sorted(output, key=str.lower)
+    def file_sorting_key(line):
+        parts = line.split()
+        fname = parts[0]
+        parts = EXT_SEP.split(fname)
+        ext = parts[-1] if len(parts) > 1 else ''
+        clean_line = line.replace('*', '~')
+        clean_line = clean_line.replace('{', '').replace('}', '')
+        return f'{ext.lower()}|{clean_line.lower()}'
+
+    sorted_output = sorted(output, key=file_sorting_key)
     for o in sorted_output:
         print(o)
-
 
 def list_dir(dirname, multiple=False, **kwargs):
     children = [os.path.basename(c) for c in glob.glob(os.path.join(dirname, '*'))]
