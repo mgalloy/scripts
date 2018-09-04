@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
+import smtplib
+from email.mime.text import MIMEText
+
 from bs4 import BeautifulSoup
-from googlevoice import Voice
-from googlevoice.util import input
 import requests
 
 
-URL = 'http://www2.ucar.edu/for-staff/daily/menu'
+URL = 'https://staff.ucar.edu/for-staff/daily/menu'
 
 
 def has_cg(tag):
@@ -29,17 +30,20 @@ def get_winner(url):
     return cg_winner
 
 
-def send_winner(winner):
-    voice = Voice()
-    voice.login()
-    voice.send_sms('3033246746', winner)
-    voice.logout()
+def send_winner(winner, address):
+    msg = MIMEText(winner)
+    msg['Subject'] = 'This week\'s cafeteria winner'
+    msg['From'] = 'mgalloy@ucar.edu'
+    msg['To'] = address
+    s = smtplib.SMTP('localhost')
+    s.send_message(msg)
+    s.quit()
 
 
 if __name__ == "__main__":
     try:
-       winner = 'Cafeteria winner: %s' % get_winner(URL)
+        winner = 'Cafeteria winner: %s' % get_winner(URL)
     except:
        winner = 'Problem retreiving cafeteria winner'
-    send_winner(winner)
+    send_winner(winner, 'mgalloy@ucar.edu')
 
