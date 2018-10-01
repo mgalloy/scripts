@@ -11,7 +11,7 @@ URL = 'https://staff.ucar.edu/for-staff/daily/menu'
 
 
 def has_cg(tag):
-    return tag.get_text()[:3] == 'CG:'
+    return tag.get_text()[:4] == 'CG -'
 
 
 def get_menu_page(url):
@@ -26,7 +26,6 @@ def get_winner(url):
     cg = soup.find_all(has_cg)
     cg_winner = cg[0].get_text()
     cg_winner = ' '.join(cg_winner.split())
-
     return cg_winner
 
 
