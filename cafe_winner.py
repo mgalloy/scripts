@@ -11,7 +11,7 @@ URL = 'https://staff.ucar.edu/for-staff/daily/menu'
 
 
 def has_cg(tag):
-    return tag.get_text()[:4] == 'CG -'
+    return tag.get_text()[:2] == 'CG'
 
 
 def get_menu_page(url):
