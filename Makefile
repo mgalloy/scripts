@@ -28,6 +28,7 @@ textbelt \
 update_book_sales.py \
 update_software.sh \
 update_status.py \
+watchdir \
 wp.py \
 wp.sh
 
