@@ -37,7 +37,7 @@ if __name__ == '__main__':
         if event is not None:
             #print(event)      # uncomment to see all events generated
             for e in event[1]:
-                logger.info(f'{e}: {event[2]}')
+                logger.info(f'{e}: {event[3]}')
                 #print(f'{e}: {event[2]}')
             #if 'IN_MOVED_TO' in event[1]:
             #    print("file '{0}' moved to '{1}'".format(event[3], event[2]))
