@@ -30,6 +30,7 @@
 # 27 Order Type
         
 import configparser
+import datetime
 import gzip
 import os
 import time
@@ -72,7 +73,11 @@ def main():
                   "filter[vendorNumber]": f"{vendor_number}",
                   "filter[reportDate]": "2019-06-02"}
 
+    today = datetime.date.today()
+    days_ago = (today.weekday() - 6) % 7
+    last_sunday = today - datetime.timedelta(days=days_ago)
     for i in range(N_WEEKS):
+        parameters['filter[reportDate]'] = last_sunday.strftime('%Y-%m-%d')
         response = requests.get(url, params=parameters, headers=header)
         #print(f"curl -v -H 'Authorization: Bearer {signature}' \"{url}\"")
         print(f"status code: {response.status_code}")
@@ -87,9 +92,10 @@ def main():
 
                 tokens = line.split("\t")
                 if float(tokens[8]) == 0.0: continue
-                print(f"Product: {tokens[4]}, Price: {tokens[8]}, Units: {tokens[7]}")
+                print(f"Report: {last_sunday}, Product: {tokens[4]}, Units: {tokens[7]}")
         else:
             print(response.content)
+        last_sunday = last_sunday - datetime.timedelta(days=7)
 
 
 if __name__ == '__main__':
