@@ -28,10 +28,12 @@
 # 25 Preserved Pricing
 # 26 Client
 # 27 Order Type
-        
+
+import collections
 import configparser
 import datetime
 import gzip
+import json
 import os
 import time
 
@@ -43,9 +45,9 @@ BASE_URL = "https://api.appstoreconnect.apple.com/v1"
 
 # time that token will be valid for (can't be for more than 20 mins)
 VALID_TIME = 20 * 60   # seconds
-N_WEEKS = 10
 
-def main():
+
+def retrieve_sales(n_weeks=10):
     config = configparser.ConfigParser()
     config.read(os.path.expanduser('~/.appstore'))
     user = config.sections()[0]
@@ -76,11 +78,15 @@ def main():
     today = datetime.date.today()
     days_ago = (today.weekday() - 6) % 7
     last_sunday = today - datetime.timedelta(days=days_ago)
-    for i in range(N_WEEKS):
+
+    all_counters = list()
+    apps = set()
+    for i in range(n_weeks):
+        counter = collections.defaultdict(int)
         parameters['filter[reportDate]'] = last_sunday.strftime('%Y-%m-%d')
         response = requests.get(url, params=parameters, headers=header)
         #print(f"curl -v -H 'Authorization: Bearer {signature}' \"{url}\"")
-        print(f"status code: {response.status_code}")
+        #print(f"status code: {response.status_code}")
         if response.status_code == 200:
             data = str(gzip.decompress(response.content), "utf-8")
             # first row is header
@@ -92,10 +98,43 @@ def main():
 
                 tokens = line.split("\t")
                 if float(tokens[8]) == 0.0: continue
-                print(f"Report: {last_sunday}, Product: {tokens[4]}, Units: {tokens[7]}")
+                counter[tokens[4]] += int(tokens[7])
+                apps.add(tokens[4])
+                #print(f"Report: {last_sunday}, Product: {tokens[4]}, Units: {tokens[7]}")
         else:
+            print(f'Problem retrieves sales data, response code {response.status_code}')
             print(response.content)
         last_sunday = last_sunday - datetime.timedelta(days=7)
+        all_counters.insert(0, {'date': last_sunday, 'units': counter})
+    return apps, all_counters
+
+
+def translate_to_statusboard(apps, sales_units):
+    datasequences = []
+    for app_name in apps:
+        seq = [{'title': week['date'].strftime('%Y-%V'), 'value': week['units'][app_name]}
+                   for week in sales_units]
+        app = {'title': app_name, 'datapoints': seq}
+        datasequences.append(app)
+
+    return datasequences
+
+def output_json(apps, sales_units, filename):
+    datasequences = translate_to_statusboard(apps, sales_units)
+    statusboard = {"graph": {"title": "App sales",
+                             "total": False,
+                             "type": "bar",
+                             "refreshEveryNSeconds": 3600,
+                             "datasequences": datasequences}}
+    json_output = json.dumps(statusboard)
+    with open(filename, 'w') as f:
+        f.write(json_output)
+
+
+def main():
+    apps, sales_units = retrieve_sales(n_weeks=26)
+    data_dir = os.path.expanduser('~/data')
+    output_json(apps, sales_units, os.path.join(data_dir, 'ios-app-sales.json'))
 
 
 if __name__ == '__main__':
