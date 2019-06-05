@@ -58,7 +58,7 @@ def retrieve_sales(n_weeks=10):
     expiration = int(now + VALID_TIME)
     issuer_id = config.get(user, 'issuer_id')
     payload = {"iss": issuer_id, "exp": expiration, "aud": "appstoreconnect-v1"}
-    private_key_filename = f"AuthKey_{key_id}.p8"
+    private_key_filename = os.path.join(os.path.expanduser("~/data"), f"AuthKey_{key_id}.p8")
     with open(private_key_filename, "r") as f:
         lines = f.readlines()
 
