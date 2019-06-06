@@ -45,18 +45,18 @@ BASE_URL = "https://api.appstoreconnect.apple.com/v1"
 
 # time that token will be valid for (can't be for more than 20 mins)
 VALID_TIME = 20 * 60   # seconds
-
+APP_COLORS = {"1RM": "yellow", "Simple Checklist : Repeat it": "orange", "Quantified Groceries": "green"}
 
 def retrieve_sales(n_weeks=10):
     config = configparser.ConfigParser()
-    config.read(os.path.expanduser('~/.appstore'))
+    config.read(os.path.expanduser("~/.appstore"))
     user = config.sections()[0]
     key_id = config.get(user, 'key_id')
     header = {"alg": "ES256", "kid": key_id, "typ": "JWT"}
 
     now = time.time()
     expiration = int(now + VALID_TIME)
-    issuer_id = config.get(user, 'issuer_id')
+    issuer_id = config.get(user, "issuer_id")
     payload = {"iss": issuer_id, "exp": expiration, "aud": "appstoreconnect-v1"}
     private_key_filename = os.path.join(os.path.expanduser("~/data"), f"AuthKey_{key_id}.p8")
     with open(private_key_filename, "r") as f:
@@ -65,7 +65,7 @@ def retrieve_sales(n_weeks=10):
     key = ''.join(lines)
     signature = jwt.encode(payload, key, algorithm="ES256", headers=header)
     signature = str(signature, "utf-8")
-    vendor_number = config.get(user, 'vendor_number')
+    vendor_number = config.get(user, "vendor_number")
 
     url = f"{BASE_URL}/salesReports"
     header = {"Authorization": f"Bearer {signature}"}
@@ -102,19 +102,20 @@ def retrieve_sales(n_weeks=10):
                 apps.add(tokens[4])
                 #print(f"Report: {last_sunday}, Product: {tokens[4]}, Units: {tokens[7]}")
         else:
-            print(f'Problem retrieves sales data, response code {response.status_code}')
+            print(f"Problem retrieves sales data, response code {response.status_code}")
             print(response.content)
         last_sunday = last_sunday - datetime.timedelta(days=7)
-        all_counters.insert(0, {'date': last_sunday, 'units': counter})
+        all_counters.insert(0, {"date": last_sunday, "units": counter})
     return apps, all_counters
 
 
 def translate_to_statusboard(apps, sales_units):
     datasequences = []
     for app_name in apps:
-        seq = [{'title': week['date'].strftime('%Y-%V'), 'value': week['units'][app_name]}
+        seq = [{"title": week["date"].strftime("%Y-%V"),
+                "value": week["units"][app_name]}
                    for week in sales_units]
-        app = {'title': app_name, 'datapoints': seq}
+        app = {"title": app_name, "color": APP_COLORS[app_name], "datapoints": seq}
         datasequences.append(app)
 
     return datasequences
@@ -133,9 +134,9 @@ def output_json(apps, sales_units, filename):
 
 def main():
     apps, sales_units = retrieve_sales(n_weeks=26)
-    data_dir = os.path.expanduser('~/data')
-    output_json(apps, sales_units, os.path.join(data_dir, 'ios-app-sales.json'))
+    data_dir = os.path.expanduser("~/data")
+    output_json(apps, sales_units, os.path.join(data_dir, "ios-app-sales.json"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
