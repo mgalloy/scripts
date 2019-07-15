@@ -12,6 +12,8 @@ dropbox.py \
 events2ics \
 fitscat \
 fix_whitespace \
+get_app_sales.py \
+get_app_sales.sh \
 imgcat \
 init_anaconda.sh \
 jenkins_statusboard \
