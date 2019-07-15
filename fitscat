@@ -82,13 +82,15 @@ def post_osc(screen=False):
     return '\a\x1b\\' if screen else '\a'
 
 
-def display_image(data, debug=False):
+def display_image(data, scale=1.0, debug=False):
     '''For more about the protocol to display images at the terminal in iTerm 2,
        see https://iterm2.com/documentation-images.html'''
     term = os.environ['TERM']
     screen = term.startswith('screen')
 
     im = Image.fromarray(data)
+    sz = im.size
+    im = im.resize((int(scale * d) for d in sz))
     output = IO()
     im.save(output, 'PNG')
 
@@ -136,7 +138,7 @@ def display_file(args):
 
             data = filters[args.filter](data)
             byte_data = byte_scale(data, min=args.min, max=args.max, debug=args.debug)
-            display_image(byte_data, debug=args.debug)
+            display_image(byte_data, scale=args.resize_factor, debug=args.debug)
 
 
 def main():
@@ -149,6 +151,7 @@ def main():
     parser.add_argument('--max', type=float, default=None, help='max for scaling')
     parser.add_argument('--debug', action='store_true', help='set to debug')
     parser.add_argument('-d', '--display', action='store_true', help='set to display')
+    parser.add_argument('--resize-factor', type=float, default=1, help='resize by factor')
     parser.add_argument('-l', '--list', action='store_true', help='set to list HDUs')
     parser.add_argument('-r', '--header', action='store_true', help='set to display header')
     parser.add_argument('-e', '--exten_no', type=int, default=0, help='specify extension')
