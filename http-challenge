@@ -24,7 +24,7 @@ def main():
     args = parser.parse_args()
 
     filename = args.content[0:43]
-    respond(filename, content)
+    respond(filename, args.content)
 
 
 if __name__ == "__main__":
