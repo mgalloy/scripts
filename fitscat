@@ -147,23 +147,36 @@ def main():
     parser = argparse.ArgumentParser(description='%s - %s' % (name, description))
 
     parser.add_argument('filename', help='FITS file to query')
-    parser.add_argument('--min', type=float, default=None, help='min for scaling')
-    parser.add_argument('--max', type=float, default=None, help='max for scaling')
+    parser.add_argument('--min', type=float, default=None,
+                        help='min for scaling')
+    parser.add_argument('--max', type=float, default=None,
+                        help='max for scaling')
     parser.add_argument('--debug', action='store_true', help='set to debug')
-    parser.add_argument('-d', '--display', action='store_true', help='set to display')
-    parser.add_argument('--resize-factor', type=float, default=1, help='resize by factor')
-    parser.add_argument('-l', '--list', action='store_true', help='set to list HDUs')
-    parser.add_argument('-r', '--header', action='store_true', help='set to display header')
-    parser.add_argument('-e', '--exten_no', type=int, default=0, help='specify extension')
-    parser.add_argument('-f', '--filter', type=str, default='none', help='specify filter (default: none)')
-    parser.add_argument('-s', '--slice', type=str, default=None, help='specify slice of data array to display')
+    parser.add_argument('-d', '--display', action='store_true',
+                        help='set to display')
+    parser.add_argument('--resize-factor', type=float, default=1,
+                        help='resize by factor')
+    parser.add_argument('-l', '--list', action='store_true',
+                        help='set to list HDUs')
+    parser.add_argument('-r', '--header', action='store_true',
+                        help='set to display header')
+    parser.add_argument('-e', '--exten_no', type=int, default=0,
+                        help='specify extension')
+    parser.add_argument('-f', '--filter', type=str, default='none',
+                        help='specify filter (default: none)')
+    parser.add_argument('-s', '--slice', type=str, default=None,
+                        help='specify slice of data array to display')
 
     args = parser.parse_args()
 
     try:
         display_file(args)
     except FileNotFoundError:
-        parser.error(f'File not found: {args.filename}')
+        parser.error(f"file not found: {args.filename}")
+    except UnicodeDecodeError:
+        parser.error(f"invalid FITS file: {args.filename}")
+    except OSError:
+        parser.error(f"invalid FITS file: {args.filename}")
 
 
 if __name__ == '__main__':
