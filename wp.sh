@@ -2,7 +2,7 @@
 
 LOG_DIR=/Users/mgalloy/data
 LOG=$LOG_DIR/wp.sh.log
-PYTHON=/Users/mgalloy/anaconda/bin/python
+PYTHON=/Users/mgalloy/anaconda3/bin/python
 
 $PYTHON /Users/mgalloy/bin/wp.py --data_dir $LOG_DIR >> $LOG 2>&1
 
