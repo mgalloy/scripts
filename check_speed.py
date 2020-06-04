@@ -31,7 +31,7 @@ if __name__ == "__main__":
     result["graph"]["datasequences"][1]["datapoints"].append(download_pt)
   else:
     result = {"graph": {"datasequences": [{ "datapoints": [upload_pt],
-                                            "title": "Upload @ 3 am" },
+                                            "title": "100x Upload @ 3 am" },
                                           { "datapoints": [download_pt],
                                             "title": "Download @ 3 am" }],
                         "total": False,
