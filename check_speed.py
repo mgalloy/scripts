@@ -17,7 +17,7 @@ if __name__ == "__main__":
   all_servers = s.get_servers(servers)
   best_server = s.get_best_server()
   download_speed = s.download() / 1000 / 1000   # Mbs
-  upload_speed = 100 * s.upload() / 1000 / 1000   # Mbs
+  upload_speed =  s.upload() / 1000 / 1000   # Mbs
 
   today = datetime.date.today()
   download_pt = {"value": download_speed, "title": "%s" % today}
@@ -31,14 +31,14 @@ if __name__ == "__main__":
     result["graph"]["datasequences"][1]["datapoints"].append(download_pt)
   else:
     result = {"graph": {"datasequences": [{ "datapoints": [upload_pt],
-                                            "title": "100x Upload @ 3 am" },
+                                            "title": "Upload @ 3 am" },
                                           { "datapoints": [download_pt],
                                             "title": "Download @ 3 am" }],
                         "total": False,
                         "type": "line",
                         "refreshEveryNSeconds": 3600,
                         "title": "Internet speed",
-                        "yAxis": {"minValue": 0, "maxValue": 200, "units": {"suffix": "Mbs"}}
+                        "yAxis": {"minValue": 0, "maxValue": 1000, "units": {"suffix": "Mbs"}}
                       }
               }
 
