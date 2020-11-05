@@ -113,7 +113,8 @@ def display_file(args):
     filters = {'none': none_filter, 'sqrt': sqrt_filter, 'log': log_filter}
 
     with warnings.catch_warnings():
-        warnings.simplefilter("ignore", AstropyUserWarning)
+        if not args.validate:
+            warnings.simplefilter("ignore", AstropyUserWarning)
         with fits.open(args.filename) as f:
             if args.list or (not args.header and not args.display):
                 f.info()
@@ -170,6 +171,8 @@ def main():
                         help='specify filter (default: none)')
     parser.add_argument('-s', '--slice', type=str, default=None,
                         help='specify slice of data array to display')
+    parser.add_argument('--validate', action="store_true",
+                        help="check keywords against FITS standard")
 
     args = parser.parse_args()
 
