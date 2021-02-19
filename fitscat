@@ -4,6 +4,7 @@ import argparse
 import base64
 import os
 import sys
+import warnings
 
 PY3 = sys.version_info > (3, 0)
 
@@ -13,6 +14,7 @@ else:
     from StringIO import StringIO as IO
 
 from astropy.io import fits
+from astropy.utils.exceptions import AstropyUserWarning
 import numpy as np
 from PIL import Image
 
@@ -110,35 +112,38 @@ def display_image(data, scale=1.0, debug=False):
 def display_file(args):
     filters = {'none': none_filter, 'sqrt': sqrt_filter, 'log': log_filter}
 
-    with fits.open(args.filename) as f:
-        if args.list or (not args.header and not args.display):
-            f.info()
+    with warnings.catch_warnings():
+        if not args.validate:
+            warnings.simplefilter("ignore", AstropyUserWarning)
+        with fits.open(args.filename) as f:
+            if args.list or (not args.header and not args.display):
+                f.info()
 
-        if args.header:
-            header = f[args.exten_no].header
-            print(repr(header))
+            if args.header:
+                header = f[args.exten_no].header
+                print(repr(header))
 
-        if args.display:
-            data = f[args.exten_no].data
-            ndims = len(data.shape)
-            dims = data.shape
-
-            if args.slice is not None:
-                indices = create_slices(args.slice)
-                data = data[tuple(indices)].squeeze()
-
-            ndims = len(data.shape)
-            if ndims != 2:
-                print('bad number of dimensions: %d' % ndims)
-                return
-
-            if args.debug:
+            if args.display:
+                data = f[args.exten_no].data
+                ndims = len(data.shape)
                 dims = data.shape
-                print('%s %d x %d'% (data.dtype, dims[0], dims[1]))
 
-            data = filters[args.filter](data)
-            byte_data = byte_scale(data, min=args.min, max=args.max, debug=args.debug)
-            display_image(byte_data, scale=args.resize_factor, debug=args.debug)
+                if args.slice is not None:
+                    indices = create_slices(args.slice)
+                    data = data[tuple(indices)].squeeze()
+
+                ndims = len(data.shape)
+                if ndims != 2:
+                    print('bad number of dimensions: %d' % ndims)
+                    return
+
+                if args.debug:
+                    dims = data.shape
+                    print('%s %d x %d'% (data.dtype, dims[0], dims[1]))
+
+                data = filters[args.filter](data)
+                byte_data = byte_scale(data, min=args.min, max=args.max, debug=args.debug)
+                display_image(byte_data, scale=args.resize_factor, debug=args.debug)
 
 
 def main():
@@ -166,6 +171,8 @@ def main():
                         help='specify filter (default: none)')
     parser.add_argument('-s', '--slice', type=str, default=None,
                         help='specify slice of data array to display')
+    parser.add_argument('--validate', action="store_true",
+                        help="check keywords against FITS standard")
 
     args = parser.parse_args()
 
