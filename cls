@@ -38,15 +38,15 @@ kcor_current_month_report.sh
 kcor_makelog.sh
 kcor_report
 Makefile
-mls
+cls
 smm-report.txt
 watch_hpss
 
-`mls` should output:
+`cls` should output:
 
 hpss
 Makefile
-mls
+cls
 watch_hpss
 kcor_report
 hpss-*.log: 6 files
@@ -181,7 +181,12 @@ def list_spec(files, **kwargs):
         if i > 0: print()
         list_dir(d, multiple=len(files) > 1, **kwargs)
 
-
+# features to add:
+#   - accept -l ls argument
+#   - add emoji icons for classes of items
+#   - tree functionality
+#   - accept -a ls argument
+#   - include size in bytes along with number of files
 if __name__ == '__main__':
     version = '0.0.1'
     name = f'Clustered ls {version}'
