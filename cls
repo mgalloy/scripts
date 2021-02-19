@@ -69,25 +69,36 @@ class Location:
         self.value = v
 
     def __repr__(self):
-        return f'Location({self.value})'
+        return(f"Location({self.value})")
+
+
+def collective_name(filenames):
+    isdirs = [os.path.isdir(f) for f in filenames]
+    isfiles = [os.path.isfile(f) for f in filenames]
+    islinks = [os.path.islink(f) for f in filenames]
+    if all(isdirs): return("directories", "/")
+    if all(isfiles): return("files", "")
+    if all(islinks): return("links", "@")
+    return("items", "")
 
 
 def print_subgroup(subgroup, diff_loc, output, max_listed=3):
+    cname, csymbol = collective_name([sg[0] for sg in subgroup])
     n = len(subgroup)
     if n == 1:
-        output.append(subgroup[0][0])
+        output.append(subgroup[0][0] + csymbol)
     elif n <= max_listed:
         parts = [s[1][diff_loc] for s in subgroup]
         sorted_parts = sorted(parts, key=str.lower)
         s = subgroup[0][1]
-        pattern = ''.join(s[:diff_loc]
-                          + ['{' + ','.join(sorted_parts) + '}']
+        pattern = "".join(s[:diff_loc]
+                          + ["{" + ",".join(sorted_parts) + "}"]
                           + s[diff_loc + 1:])
-        output.append(pattern)
+        output.append(pattern + csymbol)
     else:
         s = subgroup[0][1]
-        pattern = ''.join(s[:diff_loc] + ['*'] + s[diff_loc + 1:])
-        output.append(f'{pattern} [{n} files]')
+        pattern = "".join(s[:diff_loc] + ["*"] + s[diff_loc + 1:])
+        output.append(f"{pattern}{csymbol} [{n} {cname}]")
 
 
 def match_except_one(g1, g2):
@@ -143,9 +154,11 @@ def list_files(filenames, **kwargs):
         n_parts = len(parts[0])
         if n_parts == 1:
             for f in filenames:
-                output.append(f)
+                cname, csymbol = collective_name([f])
+                output.append(f + csymbol)
         elif n == 1:
-            output.append(filenames[0])
+            cname, csymbol = collective_name(filenames)
+            output.append(filenames[0] + csymbol)
         else:
             list_grouped_files(group, output, **kwargs)
 
@@ -156,15 +169,16 @@ def list_files(filenames, **kwargs):
         ext = parts[-1] if len(parts) > 1 else ''
         clean_line = line.replace('*', '~')
         clean_line = clean_line.replace('{', '').replace('}', '')
-        return f'{ext.lower()}|{clean_line.lower()}'
+        return f"{ext.lower()}|{clean_line.lower()}"
 
     sorted_output = sorted(output, key=file_sorting_key)
     for o in sorted_output:
         print(o)
 
+
 def list_dir(dirname, multiple=False, **kwargs):
     children = [os.path.basename(c) for c in glob.glob(os.path.join(dirname, '*'))]
-    if multiple: print(f'{dirname}:')
+    if multiple: print(f"{dirname}/:")
     list_files(children, **kwargs)
 
 
@@ -172,14 +186,15 @@ def list_spec(files, **kwargs):
     filenames = [f for f in files if os.path.isfile(f)]
     dirnames = [d for d in files if os.path.isdir(d)]
 
-    list_files(filenames, **kwargs)
+    for i, d in enumerate(dirnames):
+        if i > 0: print()
+        list_dir(d, multiple=len(files) > 1, **kwargs)
 
     if len(filenames) > 0 and len(dirnames) > 0:
         print()
 
-    for i, d in enumerate(dirnames):
-        if i > 0: print()
-        list_dir(d, multiple=len(files) > 1, **kwargs)
+    list_files(filenames, **kwargs)
+
 
 # features to add:
 #   - accept -l ls argument
