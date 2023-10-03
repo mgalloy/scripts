@@ -145,7 +145,8 @@ def list_grouped_files(group, output, **kwargs):
 def list_files(filenames, **kwargs):
     output = []
     dots = [SEP.split(f) for f in filenames]
-    sorted_filenames = sorted(zip(filenames, dots), key=lambda x: len(x[1]))
+    #sorted_filenames = sorted(zip(filenames, dots), key=lambda x: len(x[1]))
+    sorted_filenames = zip(filenames, dots)
     for e, group in itertools.groupby(sorted_filenames, lambda x: len(x[1])):
         group = list(group)
         filenames = [g[0] for g in group]
@@ -169,7 +170,8 @@ def list_files(filenames, **kwargs):
         ext = parts[-1] if len(parts) > 1 else ''
         clean_line = line.replace('*', '~')
         clean_line = clean_line.replace('{', '').replace('}', '')
-        return f"{ext.lower()}|{clean_line.lower()}"
+        #return f"{ext.lower()}|{clean_line.lower()}"
+        return f"{ext}|{clean_line}"
 
     sorted_output = sorted(output, key=file_sorting_key)
     for o in sorted_output:
@@ -177,14 +179,25 @@ def list_files(filenames, **kwargs):
 
 
 def list_dir(dirname, multiple=False, **kwargs):
-    children = [os.path.basename(c) for c in glob.glob(os.path.join(dirname, '*'))]
+    items = glob.glob(os.path.join(dirname, '*'))
+
+    filenames = [os.path.basename(f) for f in items if os.path.isfile(f)]
+    dirnames = [os.path.basename(d) for d in items if os.path.isdir(d)]
+
+    filenames = sorted(filenames)
+    dirnames = sorted(dirnames)
+
     if multiple: print(f"{dirname}/:")
-    list_files(children, **kwargs)
+    list_files(dirnames, **kwargs)
+    list_files(filenames, **kwargs)
 
 
 def list_spec(files, **kwargs):
     filenames = [f for f in files if os.path.isfile(f)]
     dirnames = [d for d in files if os.path.isdir(d)]
+
+    filenames = sorted(filenames)
+    dirnames = sorted(dirnames)
 
     for i, d in enumerate(dirnames):
         if i > 0: print()
@@ -202,14 +215,14 @@ def list_spec(files, **kwargs):
 #   - tree functionality
 #   - accept -a ls argument
 #   - include size in bytes along with number of files
-if __name__ == '__main__':
-    version = '0.0.1'
-    name = f'Clustered ls {version}'
+if __name__ == "__main__":
+    version = "0.0.2"
+    name = f"Clustered ls {version}"
     parser = argparse.ArgumentParser(description=name)
-    parser.add_argument('files', type=str, nargs='*',
-                        help='path specification to check', default='.')
-    parser.add_argument('-m', '--max-listed', type=int, default=3,
-                        help='max number of files to explicitly list')
+    parser.add_argument("files", type=str, nargs="*",
+                        help="path specification to check", default=".")
+    parser.add_argument("-m", "--max-listed", type=int, default=3,
+                        help="max number of files to explicitly list")
     args = parser.parse_args()
 
     list_spec(args.files, max_listed=args.max_listed)
